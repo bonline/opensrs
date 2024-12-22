@@ -102,8 +102,9 @@ class MockXCPChannelFactory(opensrsapi.XCPChannel):
         self.requests.append(req)
         self.responses.append(resp)
 
-    def __call__(self, host, port, username, private_key, timeout):
+    def __call__(self, host, port, username, private_key, timeout, proxy=None):
         self.private_key = private_key
+        self.proxy = proxy
         return self
 
     def make_request(self, message):
@@ -331,7 +332,7 @@ class OpenSRSTest(TestCase):
         }
         opensrs = self.safe_opensrs(self._data_suggest_domains('foo', 4),
                                     response_data)
-        self.assertEquals(expected,
+        self.assertEqual(expected,
                           opensrs.suggest_domains(
                               'foo', ['.COM', '.ORG', '.NET', '.INFO'], 4))
 
@@ -399,7 +400,7 @@ class OpenSRSTest(TestCase):
                 'ref_number': '1065034'
             }
         }
-        self.assertEquals(expected, opensrs.register_domain(
+        self.assertEqual(expected, opensrs.register_domain(
             'foo.com', 1, self._objdata_user_contact(), 'foo', 'bar'))
 
     def test_register_succeed_nameservers(self):
@@ -430,7 +431,7 @@ class OpenSRSTest(TestCase):
                 'ref_number': '1065034'
             }
         }
-        self.assertEquals(expected, opensrs.register_domain(
+        self.assertEqual(expected, opensrs.register_domain(
             'foo.com', 1, self._objdata_user_contact(), 'foo', 'bar',
             nameservers=nameservers))
 
@@ -455,7 +456,7 @@ class OpenSRSTest(TestCase):
                 'ref_number': '1065034'
             }
         }
-        self.assertEquals(expected, opensrs.create_pending_domain_registration(
+        self.assertEqual(expected, opensrs.create_pending_domain_registration(
             'foo.com', 1, self._objdata_user_contact(), 'foo', 'bar'))
 
     def test_renew_domain_fails_when_already_renewed(self):
@@ -511,7 +512,7 @@ class OpenSRSTest(TestCase):
                 attributes={'order_id': '1065034'})
         )
         expected = '1065034'
-        self.assertEquals(expected, opensrs.create_pending_domain_renewal(
+        self.assertEqual(expected, opensrs.create_pending_domain_renewal(
             'foo.com', '2017', '1'))
 
     def test_renew_domain_renewal_succeeds(self):
@@ -528,7 +529,7 @@ class OpenSRSTest(TestCase):
                 attributes={'order_id': '1065034'})
         )
         expected = '1065034'
-        self.assertEquals(expected, opensrs.renew_domain(
+        self.assertEqual(expected, opensrs.renew_domain(
             'foo.com', '2017', '1'))
 
     def test_domain_transfer_fails_when_domain_is_not_transferable(self):
