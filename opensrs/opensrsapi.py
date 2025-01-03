@@ -1,7 +1,7 @@
 from functools import update_wrapper
 import logging
 
-from demands.pagination import PaginatedResults, RESULTS_KEY
+from opensrs.demands_local import PaginatedResults, RESULTS_KEY
 
 from opensrs import errors
 from opensrs.constants import AUTO_RENEWED_TLDS, OrderProcessingMethods
